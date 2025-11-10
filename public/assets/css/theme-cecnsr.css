@@ -1,0 +1,279 @@
+
+/*
+  CECNSR Theme — non-breaking add-on stylesheet
+  Drop-in file. Safe: only adds variables and class-based styles.
+  Link it after your current /assets/css/ui-cecnsr.css
+*/
+
+:root{
+  /* Brand palette from logo */
+  --cecns-burgundy: rgb(118,34,68);
+  --cecns-burgundy-2: rgb(112,25,61);
+  --cecns-navy: rgb(31,48,82);
+  --cecns-gold: rgb(217,176,42);
+  --cecns-lime: rgb(187,207,48);
+  --cecns-green: rgb(3,117,53);
+  --cecns-ink: #0f172a;
+  --cecns-muted-ink: #334155;
+  --cecns-bg: #f8fafc;
+  --cecns-surface: #ffffff;
+  --cecns-border: #e2e8f0;
+  --cecns-ring: rgba(217,176,42,.45);
+  --cecns-success: #16a34a;
+  --cecns-danger: #dc2626;
+  --cecns-warning: #f59e0b;
+
+  --radius-xs: .4rem;
+  --radius: .8rem;
+  --radius-lg: 1.2rem;
+
+  --shadow-1: 0 1px 2px rgba(0,0,0,.06), 0 1px 1px rgba(0,0,0,.04);
+  --shadow-2: 0 6px 18px rgba(31,48,82,.10);
+  --shadow-3: 0 14px 42px rgba(31,48,82,.18);
+
+  --font-sans: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+}
+
+html,body{
+  background: var(--cecns-bg);
+  color: var(--cecns-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.container-narrow{
+  max-width: 960px;
+  margin-inline: auto;
+  padding: 1.25rem;
+}
+
+/* ---------- Cards ---------- */
+.card{
+  background: var(--cecns-surface);
+  border: 1px solid var(--cecns-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
+}
+.card--elevated{ box-shadow: var(--shadow-2); }
+.card__header{ padding: 1.1rem 1.25rem; border-bottom: 1px solid var(--cecns-border); }
+.card__title{ font-weight: 700; font-size: 1.125rem; color: var(--cecns-navy); }
+.card__body{ padding: 1.25rem; }
+.card__footer{ padding: 1rem 1.25rem; border-top: 1px solid var(--cecns-border); }
+
+/* ---------- Buttons ---------- */
+.btn{
+  --btn-bg: var(--cecns-navy);
+  --btn-fg: #fff;
+  --btn-bd: transparent;
+  display: inline-flex; align-items:center; gap:.5rem;
+  padding: .675rem 1.1rem;
+  font-weight: 600;
+  letter-spacing:.2px;
+  border: 1px solid var(--btn-bd);
+  border-radius: var(--radius);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  cursor:pointer;
+  transition: transform .05s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
+  box-shadow: var(--shadow-1);
+}
+.btn:focus{ outline: none; box-shadow: 0 0 0 4px var(--cecns-ring); }
+.btn:hover{ transform: translateY(-1px); box-shadow: var(--shadow-2); }
+.btn:active{ transform: translateY(0); }
+
+.btn--gold{ --btn-bg: var(--cecns-gold); --btn-fg: #1c1917; }
+.btn--burgundy{ --btn-bg: var(--cecns-burgundy); }
+.btn--green{ --btn-bg: var(--cecns-green); }
+.btn--outline{
+  --btn-bg: transparent; --btn-fg: var(--cecns-navy); --btn-bd: var(--cecns-navy);
+}
+.btn--ghost{ --btn-bg: transparent; --btn-fg: var(--cecns-navy); border-color: transparent; }
+.btn--block{ width: 100%; justify-content: center; }
+
+/* ---------- Forms ---------- */
+.input, .select, .textarea, input[type="text"], input[type="email"], input[type="password"], input[type="tel"], select, textarea{
+  width: 100%;
+  padding: .7rem .9rem;
+  border: 1px solid var(--cecns-border);
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--cecns-ink);
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.input:focus, .select:focus, .textarea:focus,
+input:focus, select:focus, textarea:focus{
+  border-color: var(--cecns-gold);
+  box-shadow: 0 0 0 4px var(--cecns-ring);
+}
+.form__row{ display: grid; gap: 1rem; }
+@media (min-width: 720px){ .form__row--2{ grid-template-columns: 1fr 1fr; } .form__row--3{ grid-template-columns: repeat(3,1fr);}}
+
+label{ font-size:.9rem; color: var(--cecns-muted-ink); display:block; margin-bottom:.35rem; }
+.help-text{ font-size:.8rem; color:#64748b; }
+
+/* Validity helpers */
+.is-invalid{ border-color: var(--cecns-danger)!important; }
+.feedback{ color: var(--cecns-danger); font-size:.85rem; margin-top:.35rem; }
+
+/* ---------- Table (buscador) ---------- */
+.table{
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--cecns-surface);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-1);
+}
+.table th, .table td{
+  padding: .8rem .9rem;
+  border-bottom: 1px solid var(--cecns-border);
+  text-align: left;
+}
+.table thead th{
+  background: linear-gradient(0deg, rgba(31,48,82,.04), rgba(31,48,82,.04));
+  color: var(--cecns-navy);
+  font-weight: 700;
+  font-size: .92rem;
+}
+.table tbody tr:hover{ background: rgba(31,48,82,.025); }
+
+/* ---------- Badges/Tags ---------- */
+.badge{
+  display:inline-block;
+  padding:.25rem .6rem;
+  border-radius: 999px;
+  font-size:.78rem; font-weight:700;
+  background: rgba(31,48,82,.08);
+  color: var(--cecns-navy);
+}
+.badge--ok{ background: rgba(3,117,53,.12); color: var(--cecns-green); }
+.badge--warn{ background: rgba(217,176,42,.2); color: #7a5a00; }
+.badge--err{ background: rgba(220,38,38,.14); color: var(--cecns-danger); }
+
+/* ---------- Login Layout ---------- */
+.login-page{
+  min-height: 100dvh;
+  display:grid;
+  place-items:center;
+  padding: 2rem;
+  background:
+    radial-gradient(800px 400px at 10% 10%, rgba(187,207,48,.18), transparent 60%),
+    radial-gradient(600px 500px at 90% 15%, rgba(217,176,42,.2), transparent 60%),
+    linear-gradient(180deg, #fff, var(--cecns-bg));
+}
+.login-card{
+  width: min(480px, 96vw);
+  border: 1px solid var(--cecns-border);
+  border-radius: 20px;
+  background: var(--cecns-surface);
+  box-shadow: var(--shadow-3);
+  overflow:hidden;
+}
+.login-card__brand{
+  display:flex; align-items:center; gap:.8rem;
+  padding: 1rem 1.1rem;
+  background: var(--cecns-navy);
+  color: #fff;
+}
+.login-card__brand img{ height: 40px; }
+.login-card__title{ font-size: 1.05rem; font-weight:800; letter-spacing:.4px; }
+.login-card__body{ padding: 1.25rem; display:grid; gap:.9rem; }
+
+/* ---------- Search Bar ---------- */
+.searchbar{
+  display:grid; gap:.6rem;
+  grid-template-columns: 1fr auto;
+  align-items:center;
+}
+.searchbar .input{ border-radius: 999px; }
+.searchbar .btn{ border-radius: 999px; }
+
+/* ---------- Header (admin) ---------- */
+.topbar{
+  background: var(--cecns-navy);
+  color:#fff;
+  border-bottom: 3px solid var(--cecns-gold);
+}
+.topbar__wrap{
+  display:flex; align-items:center; justify-content:space-between;
+  max-width: 1100px; margin-inline:auto; padding:.85rem 1rem;
+}
+.topbar__brand{ display:flex; align-items:center; gap:.6rem; font-weight:800; letter-spacing:.4px; }
+.topbar__brand img{ height:28px; border-radius:6px; }
+.topbar__actions{ display:flex; gap:.5rem; }
+
+/* ---------- Footer note ---------- */
+.footer-note{ font-size:.8rem; color:#64748b; }
+
+/* ---------- Utility ---------- */
+.mt-1{ margin-top:.5rem } .mt-2{ margin-top:1rem } .mt-3{ margin-top:1.5rem }
+.mb-1{ margin-bottom:.5rem } .mb-2{ margin-bottom:1rem } .mb-3{ margin-bottom:1.5rem }
+.p-1{ padding:.75rem } .p-2{ padding:1.25rem } .p-3{ padding:1.75rem }
+.grid-2{ display:grid; gap:1rem; }
+@media(min-width:820px){ .grid-2{ grid-template-columns: 2fr 1fr; } }
+
+/* Keep forms and tables responsive without touching HTML */
+.responsive-scroll{ overflow:auto; -webkit-overflow-scrolling: touch; }
+
+/* ---------- Existing markup alignment (no HTML edits needed) ---------- */
+
+/* appbar already exists on all pages */
+.appbar{
+  display:flex; align-items:center; gap:.9rem;
+  padding:.8rem 1rem;
+  background: var(--cecns-navy);
+  color:#fff;
+  border-bottom: 3px solid var(--cecns-gold);
+}
+.appbar img{ height:40px; border-radius:.5rem; }
+.appbar__title{ font-weight:800; letter-spacing:.3px; }
+.appbar__subtitle{ font-size:.88rem; opacity:.9; }
+
+/* login.html bare form */
+body:has(#form-login){
+  background: linear-gradient(180deg,#fff,var(--cecns-bg));
+}
+#form-login{
+  width:min(460px, 92vw);
+  margin: 8vh auto;
+  background:#fff;
+  border:1px solid var(--cecns-border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-3);
+  padding: 1.2rem;
+  display:grid; gap:.8rem;
+}
+#form-login input{ font-size:1rem; }
+#form-login button{ composes: btn from global; } /* ignored by browsers, just a note */
+
+/* buscador.html */
+.controls{
+  display:flex; flex-wrap:wrap; gap:.6rem; align-items:center;
+  padding:.5rem 0 1rem;
+}
+.controls > input[type="text"]{ flex:1 1 260px; }
+.controls > button{ }
+.badge{ vertical-align: middle; }
+
+/* each result row */
+.row{
+  background:#fff !important;
+  border:1px solid var(--cecns-border) !important;
+  border-left:6px solid var(--cecns-lime) !important;
+  box-shadow: var(--shadow-1);
+  transition: transform .05s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.row:hover{ transform: translateY(-1px); box-shadow: var(--shadow-2); border-left-color: var(--cecns-gold); }
+
+/* form.html */
+.wrap{ background:#fff !important; border:1px solid var(--cecns-border); border-radius: 18px; box-shadow: var(--shadow-2); padding: 1.5rem !important; }
+legend{ background: var(--cecns-navy); color:#fff; padding:.45rem .7rem; border-radius: 999px; font-weight:700; }
+fieldset{ border:1px dashed var(--cecns-border); border-radius: 12px; padding: 1rem; }
+.wrap label{ display:block; margin:.35rem 0; color: var(--cecns-muted-ink); }
+.wrap input, .wrap select{ margin-top:.25rem; }
+.wrap button{ margin-top: .8rem; }
+
+/* stick a gentle page max width on pages without container */
+main, .container, .wrap{ max-width: 1100px; margin-inline:auto; }

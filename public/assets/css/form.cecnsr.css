@@ -1,0 +1,18 @@
+/* This file assumes theme-cecnsr.css is loaded first */
+/* FORM PAGE --------------------------------- */
+.form-page{ background: var(--cecns-bg); padding: 1.25rem; }
+.wrap{ max-width: 960px; margin: 32px auto; background:#fff; padding: 24px; border-radius: 18px; border:1px solid var(--cecns-border); box-shadow: var(--shadow-2); }
+h1{ color: var(--cecns-navy); margin: 0 0 .25rem 0; }
+p{ color: var(--cecns-muted-ink); }
+
+fieldset{ border:1px dashed var(--cecns-border); border-radius: 12px; margin: 16px 0; padding: 16px; }
+legend{ background: var(--cecns-navy); color:#fff; padding:.45rem .7rem; border-radius:999px; font-weight:700; letter-spacing:.2px; }
+
+label{ display:block; margin:.45rem 0; color: var(--cecns-muted-ink); }
+input, select{ width:100%; padding:.7rem .95rem; border:1px solid var(--cecns-border); border-radius: var(--radius); outline:none; }
+input:focus, select:focus{ border-color: var(--cecns-gold); box-shadow: 0 0 0 4px var(--cecns-ring); }
+button.primary{ background: var(--cecns-green); color:#fff; border:0; border-radius: var(--radius); padding:.75rem 1rem; font-weight:700; box-shadow: var(--shadow-1); }
+button.primary:hover{ box-shadow: var(--shadow-2); transform: translateY(-1px); }
+
+.ok{ color: var(--cecns-green); }
+.err{ color: #dc2626; }

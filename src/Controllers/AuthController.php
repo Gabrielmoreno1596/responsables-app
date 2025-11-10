@@ -33,19 +33,34 @@ class AuthController
         }
 
         if (session_status() !== PHP_SESSION_ACTIVE) {
+            $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+                || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
             session_start([
-                'cookie_path'     => '/',      // <— MUY IMPORTANTE
+                'cookie_path'     => '/',
                 'cookie_httponly' => true,
                 'cookie_samesite' => 'Lax',
+                'cookie_secure'   => $isHttps, // true en prod con SSL; false en local
             ]);
         }
+        session_regenerate_id(true);
 
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['role']    = $user['role'];
+        $_SESSION['user_id'] = (int)$user['id'];
+        $_SESSION['role']    = (string)$user['role'];
 
-        return ResponseHelper::json($response, [
-            'message' => 'Login correcto',
-            'user' => ['id' => $user['id'], 'role' => $user['role'], 'name' => $user['username']],
-        ], 200);
+        return ResponseHelper::json($response, ['message' => 'ok'], 200);
+    }
+
+    public function logout(Request $req, Response $res): Response
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        $_SESSION = [];
+        if (ini_get('session.use_cookies')) {
+            $p = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000, $p['path'], $p['domain'], $p['secure'], $p['httponly']);
+        }
+        session_destroy();
+        return ResponseHelper::json($res, ['message' => 'ok'], 200);
     }
 }

@@ -1,0 +1,24 @@
+/* This file assumes theme-cecnsr.css is loaded first */
+/* LOGIN PAGE -------------------------------- */
+.login-page{ min-height: 100dvh; display:grid; place-items:center; padding: 2rem;
+  background:
+    radial-gradient(800px 400px at 10% 10%, rgba(187,207,48,.18), transparent 60%),
+    radial-gradient(600px 500px at 90% 15%, rgba(217,176,42,.2), transparent 60%),
+    linear-gradient(180deg, #fff, var(--cecns-bg));
+}
+
+.appbar{ display:flex; align-items:center; gap:.9rem; padding:.8rem 1rem;
+  background: var(--cecns-navy); color:#fff; border-bottom: 3px solid var(--cecns-gold);
+}
+.appbar img{ height:40px; border-radius:.5rem; }
+.appbar__title{ font-weight:800; letter-spacing:.3px; }
+.appbar__subtitle{ font-size:.88rem; opacity:.9; }
+
+#form-login{
+  width: min(460px, 92vw); margin: 8vh auto; background:#fff; border:1px solid var(--cecns-border);
+  border-radius: 16px; box-shadow: var(--shadow-3); padding: 1.2rem; display:grid; gap:.9rem;
+}
+#form-login input{ padding:.7rem .9rem; border:1px solid var(--cecns-border); border-radius: var(--radius); }
+#form-login input:focus{ border-color: var(--cecns-gold); box-shadow: 0 0 0 4px var(--cecns-ring); outline: none; }
+#form-login button{ background: var(--cecns-burgundy); color:#fff; border:0; border-radius: var(--radius); padding:.75rem 1rem; font-weight:700; box-shadow: var(--shadow-1); }
+#form-login button:hover{ box-shadow: var(--shadow-2); transform: translateY(-1px); }

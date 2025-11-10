@@ -1,0 +1,225 @@
+/* ====== UI CECNSR ====== */
+:root {
+  --cecns-burgundy: #7c1832;
+  --cecns-navy: #0f2b46;
+  --cecns-gold: #d4a928;
+  --cecns-lime: #b7d437;
+  --cecns-green: #1e7a3a;
+  --cecns-white: #ffffff;
+  --cecns-ink: #0e1a24;
+  --cecns-mute: #7a8596;
+  --cecns-bg: #f6f7fa;
+
+  --radius: 16px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Ubuntu, Arial,
+    sans-serif;
+  color: var(--cecns-ink);
+  background: var(--cecns-bg);
+}
+a {
+  color: var(--cecns-burgundy);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Shell */
+.appbar {
+  background: linear-gradient(90deg, var(--cecns-burgundy), var(--cecns-navy));
+  color: #fff;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+.appbar img {
+  height: 38px;
+  width: auto;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+.appbar__title {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.appbar__subtitle {
+  opacity: 0.85;
+  font-size: 0.9rem;
+}
+
+.container {
+  max-width: 980px;
+  margin: 28px auto;
+  padding: 0 16px;
+}
+
+/* Card */
+.card {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.card__hd {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px;
+  background: linear-gradient(180deg, var(--cecns-navy) 0%, #112e4d 100%);
+  color: #fff;
+}
+.card__hd .title {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.card__bd {
+  padding: 18px;
+}
+
+/* Form */
+.field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+label {
+  font-size: 0.9rem;
+  color: var(--cecns-navy);
+  font-weight: 600;
+}
+input,
+select,
+button {
+  font: inherit;
+  line-height: 1;
+  padding: 12px 12px;
+  border-radius: 12px;
+  border: 1px solid #dfe3ea;
+  outline: 0;
+  background: #fff;
+  transition: 0.2s border-color, 0.2s box-shadow, 0.2s transform;
+}
+input:focus,
+select:focus {
+  border-color: var(--cecns-burgundy);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--cecns-burgundy) 25%, transparent);
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 0;
+}
+.btn-primary {
+  background: linear-gradient(90deg, var(--cecns-burgundy), var(--cecns-green));
+  color: #fff;
+}
+.btn-primary:hover {
+  filter: brightness(1.05);
+}
+.btn-ghost {
+  background: #fff;
+  border: 1px solid #e6e8ee;
+}
+.btn-ghost:hover {
+  background: #fafbfd;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Badges & Pills */
+.pill {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  border: 1px solid #e6e8ee;
+  background: #fff;
+}
+.pill--gold {
+  border-color: var(--cecns-gold);
+  color: #654a00;
+}
+.pill--muted {
+  color: var(--cecns-mute);
+}
+
+/* Grid utils */
+.grid {
+  display: grid;
+  gap: 12px;
+}
+.grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 700px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Table-like list */
+.result {
+  display: grid;
+  gap: 10px;
+}
+.row {
+  background: #fff;
+  border: 1px solid #eceff4;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: var(--shadow-sm);
+}
+.row__hd {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.row__name {
+  font-weight: 800;
+  color: var(--cecns-navy);
+}
+.row__meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.meta {
+  font-size: 0.85rem;
+}
+.meta b {
+  color: var(--cecns-navy);
+}
+
+/* Hero strap */
+.strap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px dashed color-mix(in srgb, var(--cecns-navy) 40%, transparent);
+  border-radius: 14px;
+  background: linear-gradient(0deg, #fff, #fafbfe);
+}

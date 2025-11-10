@@ -11,20 +11,33 @@ use CECNSR\ResponseHelper;
 
 class EstudianteController
 {
-    public function search(Request $req, Response $res): Response
+    public function search(Request $request, Response $response): Response
     {
-        $p    = $req->getQueryParams();
-        $name = trim((string)($p['name'] ?? ''));       // <— solo nombre
+        $p = $request->getQueryParams();
+
+        // Acepta ?q=... (y también ?name=... por compatibilidad)
+        $q     = trim($p['q'] ?? ($p['name'] ?? ''));
+        $grado = trim($p['grado'] ?? '');
+
+        // Paginación básica (opcional)
         $page = max(1, (int)($p['page'] ?? 1));
-        $size = min(100, max(1, (int)($p['size'] ?? 20)));
+        $size = min(100, max(1, (int)($p['size'] ?? 10)));
+        $offset = ($page - 1) * $size;
 
         $repo = new EstudianteRepository();
-        $data = $repo->searchByName($name, $page, $size);
+        [$rows, $total] = $repo->search($q, $grado, $size, $offset);
+        $paged = $rows; // ya viene paginado
 
-        return ResponseHelper::json($res, [
-            'data' => $data['items'],
-            'meta' => ['total' => $data['total'], 'page' => $data['page'], 'size' => $data['size']]
-        ]);
+
+        $payload = [
+            'items' => $paged,
+            'total' => $total,
+            'page'  => $page,
+            'size'  => $size,
+        ];
+
+        $response->getBody()->write(json_encode($payload));
+        return $response->withHeader('Content-Type', 'application/json');
     }
 
     public function create(Request $req, Response $res): Response
@@ -61,10 +74,11 @@ class EstudianteController
             $id = $repo->create($e, $r);
             return ResponseHelper::json($res, ['message' => 'creado', 'id' => $id], 201);
         } catch (\Throwable $ex) {
-            // En dev: devuelve el mensaje real. En prod, cambia por uno genérico y loguéalo.
+            // En producción, mensaje genérico + log a Monolog
+            // (asegúrate de tener un logger configurado)
+            // $this->logger->error('DB error', ['exception' => $ex]);
             return ResponseHelper::json($res, [
-                'error'   => 'DB error',
-                'message' => $ex->getMessage(), // <-- te dirá exactamente qué falló
+                'error' => 'DB error'
             ], 500);
         }
     }

@@ -1,4 +1,4 @@
 <?php
 // config/settings.php
 
-return ['displayErrorDetails' => true];
+return ['displayErrorDetails' => false];

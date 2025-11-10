@@ -1,32 +1,21 @@
-<!DOCTYPE html><meta charset="utf-8" /><title>Buscador</title>
-<style>
-  .row {
-    border: 1px solid #ddd;
-    padding: 10px;
-    margin: 8px 0;
-    border-radius: 8px;
-  }
-  .controls {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  .pill {
-    padding: 3px 8px;
-    border: 1px solid #ccc;
-    border-radius: 999px;
-    font-size: 12px;
-  }
-</style>
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<title>Buscador</title>
+
+<!-- Deja esto para que las rutas relativas apunten a /responsables-app/public/ -->
+<base href="/responsables-app/public/" />
+<!-- <link rel="stylesheet" href="assets/css/ui-cecnsr.css" /> -->
+<link rel="stylesheet" href="assets/css/theme-cecnsr.css" />
+<link rel="stylesheet" href="assets/css/buscador.cecnsr.css" />
 
 <div class="controls">
   <input
     id="name"
-    placeholder="Nombre del estudiante…"
+    placeholder="Nombre / DUI / correo…"
     style="min-width: 280px"
   />
   <button id="buscar">Buscar</button>
-  <span id="meta" class="pill">0 resultados</span>
+  <span id="badge" class="pill">0 resultados</span>
 </div>
 
 <div id="list"></div>
@@ -37,64 +26,222 @@
   <button id="next">Siguiente »</button>
 </div>
 
+<!-- Filtros opcionales (se ven bien con buscador.cecnsr.css) -->
+<div class="filters" id="filters">
+  <button type="button" class="filter-chip" data-key="grado" data-value="1°">
+    1°
+  </button>
+  <button type="button" class="filter-chip" data-key="grado" data-value="2°">
+    2°
+  </button>
+  <button type="button" class="filter-chip" data-key="grado" data-value="3°">
+    3°
+  </button>
+
+  <button type="button" class="filter-chip" data-key="tiene_dui" data-value="1">
+    Con DUI
+  </button>
+  <button type="button" class="filter-chip" data-key="tiene_dui" data-value="0">
+    Sin DUI
+  </button>
+
+  <button
+    type="button"
+    class="filter-chip"
+    data-key="departamento"
+    data-value="San Salvador"
+  >
+    San Salvador
+  </button>
+</div>
+
 <script>
-  const nameInput = document.getElementById("name");
-  const list = document.getElementById("list");
-  const meta = document.getElementById("meta");
-  const pageLbl = document.getElementById("page");
+  const $ = (s) => document.querySelector(s);
+  const input = $("#name");
+  const list = $("#list");
+  const badge = $("#badge");
+  const pageLbl = $("#page");
+  const btnBuscar = $("#buscar");
+  const btnPrev = $("#prev");
+  const btnNext = $("#next");
+
   let page = 1,
-    size = 10,
-    t;
+    size = 10;
 
-  function debounce(f, ms = 250) {
-    clearTimeout(t);
-    t = setTimeout(f, ms);
-  }
+  // ------- Helpers de filtros (disponibles desde el otro script) -------
+  // buildApiParams(base)           -> agrega solo filtros soportados por backend (grado)
+  // applyClientFilters(items)      -> aplica filtros cliente (tiene_dui, departamento, ...)
+  // paginateClient(items, p, lim)  -> pagina en cliente
 
-  async function load() {
-    const params = new URLSearchParams({
-      name: nameInput.value || "",
-      page,
-      size,
-    });
-    const r = await fetch(
-      "/responsables-app/public/api/estudiantes?" + params,
-      { credentials: "include" }
-    );
-    const j = await r.json();
+  async function cargar() {
+    const term = (input.value || "").trim();
 
-    meta.textContent = `${j.meta.total} resultados`;
-    pageLbl.textContent = `pág. ${page}`;
-    list.innerHTML = (j.data || []).length
-      ? j.data
+    // 1) Construir params para API (con filtros "grado" si los hay)
+    const params = buildApiParams({ q: term, page, size });
+
+    // 2) Fetch a la API
+    const url = `api/estudiantes?${params.toString()}`;
+    const resp = await fetch(url, { method: "GET", credentials: "include" });
+
+    if (resp.status === 401) {
+      location.href = "login";
+      return;
+    }
+    if (!resp.ok) {
+      console.error("Error API:", await resp.text());
+      list.innerHTML = "<p>Error al cargar resultados.</p>";
+      return;
+    }
+
+    const data = await resp.json();
+    const items = Array.isArray(data.items) ? data.items : [];
+
+    // 3) Post-filtro en cliente (para claves no soportadas por backend)
+    const filtered = applyClientFilters(items);
+
+    // 4) Re-paginación en cliente (coherente con lo filtrado)
+    const {
+      page: curPage,
+      total,
+      totalPages,
+      pageItems,
+    } = paginateClient(filtered, page, size);
+
+    // 5) Render
+    list.innerHTML = pageItems.length
+      ? pageItems
           .map(
             (x) => `
-      <div class="row">
-        <strong>${x.estudiante}</strong> — ${x.grado || "s/g"}<br>
-        Resp.: ${x.responsable || "-"}<br>
-        Tel: ${x.telefono || "-"} | Email: ${x.correo || "-"}
-      </div>`
+          <div class="row">
+            <strong>${x.alumno}</strong> — ${x.grado || "s/g"}<br>
+            Resp.: ${x.responsable || "-"}<br>
+            DUI: ${x.dui || "-"} · Tel: ${x.telefono || "-"} · Email: ${
+              x.correo || "-"
+            }<br>
+            ${x.municipio || "-"}, ${x.departamento || "-"}
+          </div>
+        `
           )
           .join("")
       : "<p>Sin resultados.</p>";
+
+    // 6) UI
+    badge.textContent = `${total} resultados`;
+    pageLbl.textContent = `pág. ${curPage}`;
+    btnPrev.disabled = curPage <= 1;
+    btnNext.disabled = curPage >= totalPages;
+
+    // 7) Mantener page en rango válido tras filtrar
+    page = curPage;
   }
-  document.getElementById("buscar").onclick = () => {
+
+  btnBuscar.addEventListener("click", () => {
     page = 1;
-    load();
-  };
-  nameInput.addEventListener("input", () => {
-    page = 1;
-    debounce(load);
+    cargar();
   });
-  document.getElementById("prev").onclick = () => {
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      page = 1;
+      cargar();
+    }
+  });
+  btnPrev.addEventListener("click", () => {
     if (page > 1) {
       page--;
-      load();
+      cargar();
     }
-  };
-  document.getElementById("next").onclick = () => {
+  });
+  btnNext.addEventListener("click", () => {
     page++;
-    load();
-  };
-  load();
+    cargar();
+  });
+
+  // Carga inicial
+  cargar();
+</script>
+
+<script>
+  // ===================== FILTROS =====================
+  const FILTERS = new Map(); // key -> Set(values)
+
+  // Chips: toggle + recargar en pág. 1
+  document.querySelectorAll("#filters .filter-chip").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const key = chip.dataset.key;
+      const val = chip.dataset.value;
+      if (!FILTERS.has(key)) FILTERS.set(key, new Set());
+      const set = FILTERS.get(key);
+
+      const isActive = chip.getAttribute("data-active") === "true";
+      if (isActive) {
+        set.delete(val);
+        chip.removeAttribute("data-active");
+      } else {
+        // EXCLUSIVO por clave (opcional):
+        // set.clear();
+        // document.querySelectorAll(`#filters .filter-chip[data-key="${key}"]`)
+        //   .forEach(c => c.removeAttribute("data-active"));
+
+        set.add(val);
+        chip.setAttribute("data-active", "true");
+      }
+      // Re-ejecutar búsqueda en pág. 1
+      if (typeof cargar === "function") {
+        window.page = 1;
+        cargar();
+      }
+    });
+  });
+
+  // --- Enviar SOLO filtros soportados por backend (grado) ---
+  function buildApiParams(base) {
+    const p = new URLSearchParams(base || {});
+    if (FILTERS.has("grado") && FILTERS.get("grado").size) {
+      FILTERS.get("grado").forEach((v) => p.append("grado", v));
+      // Si tu backend prefiere coma:
+      // p.set('grado', Array.from(FILTERS.get('grado')).join(','));
+    }
+    return p;
+  }
+
+  // --- Post-filtros en cliente (no soportados por backend) ---
+  function applyClientFilters(items) {
+    let out = items.slice();
+
+    // tiene_dui: 1 (con) / 0 (sin)
+    if (FILTERS.has("tiene_dui") && FILTERS.get("tiene_dui").size) {
+      const wants = FILTERS.get("tiene_dui"); // Set('1') o Set('0')
+      out = out.filter((x) => {
+        const hasDui = !!(x.dui && String(x.dui).trim() !== "");
+        return (hasDui && wants.has("1")) || (!hasDui && wants.has("0"));
+      });
+    }
+
+    // departamento (puede haber varios)
+    if (FILTERS.has("departamento") && FILTERS.get("departamento").size) {
+      const wants = new Set(
+        Array.from(FILTERS.get("departamento")).map((s) => s.toLowerCase())
+      );
+      out = out.filter((x) =>
+        wants.has(String(x.departamento || "").toLowerCase())
+      );
+    }
+
+    return out;
+  }
+
+  // --- Paginación en cliente (coherente con filtros del front) ---
+  function paginateClient(items, page, limit) {
+    const total = items.length;
+    const totalPages = Math.max(1, Math.ceil(total / limit));
+    const p = Math.min(Math.max(1, page), totalPages);
+    const start = (p - 1) * limit;
+    const pageItems = items.slice(start, start + limit);
+    return { page: p, total, totalPages, pageItems };
+  }
+
+  // Exponer por si otros scripts lo requieren
+  window.buildApiParams = buildApiParams;
+  window.applyClientFilters = applyClientFilters;
+  window.paginateClient = paginateClient;
 </script>
