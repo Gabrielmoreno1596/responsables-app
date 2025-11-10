@@ -1,0 +1,24 @@
+<!DOCTYPE html><meta charset="utf-8" /><title>Login</title>
+<form id="form-login">
+  <input name="username" value="admin" required />
+  <input type="password" name="password" required />
+  <button>Entrar</button>
+</form>
+<pre id="out">...</pre>
+<script>
+  const out = document.getElementById("out");
+  document
+    .getElementById("form-login")
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const fd = new URLSearchParams(new FormData(e.target));
+      const resp = await fetch("/responsables-app/public/api/login", {
+        method: "POST",
+        body: fd,
+        credentials: "include",
+      });
+      const text = await resp.text();
+      out.textContent = text;
+      if (resp.ok) location.href = "/responsables-app/public/buscador";
+    });
+</script>

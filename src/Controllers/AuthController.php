@@ -1,0 +1,51 @@
+<?php
+
+declare(strict_types=1);
+
+namespace CECNSR\Controllers;
+
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use CECNSR\Services\AuthService;
+use CECNSR\ResponseHelper;
+
+class AuthController
+{
+    public function login(Request $request, Response $response): Response
+    {
+        $data = $request->getParsedBody();
+        if (!is_array($data)) {
+            return ResponseHelper::json($response, ['error' => 'Cuerpo vacío: agrega addBodyParsingMiddleware()'], 400);
+        }
+
+        $username = $data['username'] ?? '';
+        $password = $data['password'] ?? '';
+
+        if ($username === '' || $password === '') {
+            return ResponseHelper::json($response, ['error' => 'Falta username o password'], 400);
+        }
+
+        $service = new AuthService();
+        $user = $service->attempt($username, $password);
+
+        if (!$user) {
+            return ResponseHelper::json($response, ['error' => 'Credenciales inválidas'], 401);
+        }
+
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start([
+                'cookie_path'     => '/',      // <— MUY IMPORTANTE
+                'cookie_httponly' => true,
+                'cookie_samesite' => 'Lax',
+            ]);
+        }
+
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['role']    = $user['role'];
+
+        return ResponseHelper::json($response, [
+            'message' => 'Login correcto',
+            'user' => ['id' => $user['id'], 'role' => $user['role'], 'name' => $user['username']],
+        ], 200);
+    }
+}

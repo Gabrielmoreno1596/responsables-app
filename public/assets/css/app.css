@@ -1,0 +1,199 @@
+/* Importar fuente moderna */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: "Poppins", sans-serif;
+  overflow-x: hidden;
+  background: rgb(223, 223, 223);
+  background: linear-gradient(
+    174deg,
+    rgb(249, 249, 252) 14%,
+    rgb(246, 248, 248) 81%
+  ); /* Fondo degradado verde claro y amarillo */
+}
+
+/* ENCABEZADO MÁS COMPACTO */
+header {
+  background-color: #2d7d46;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: -12px;
+}
+
+.logo img {
+  width: 50px;
+  height: auto;
+  margin-right: 10px;
+}
+
+header h1 {
+  font-size: 18px;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* TÍTULO SECUNDARIO */
+.titulo-secundario {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  color: #2d7d46;
+  margin-top: 5px;
+  margin-bottom: -30px;
+}
+
+/* CONTENEDOR PRINCIPAL */
+.container {
+  width: 100%;
+  text-align: center;
+  padding: 20px;
+  flex: 1;
+  padding-bottom: 0px;
+}
+
+/* BARRA DE BÚSQUEDA */
+#buscador {
+  margin-bottom: 20px;
+  padding: 12px;
+  width: 100%;
+  max-width: 400px;
+  border: 2px solid #2d7d46;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* CONTENEDOR DE RESULTADOS */
+#datos-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 25px;
+  padding: 10px;
+}
+
+/* TARJETAS DE ESTUDIANTES */
+.estudiante {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: transform 0.3s;
+  border-left: 5px solid #ffd700;
+}
+
+.estudiante:hover {
+  transform: scale(1.05);
+  border-left: 5px solid #2d7d46;
+}
+
+.estudiante h3 {
+  color: #2d7d46;
+  font-weight: 700;
+}
+
+/* PIE DE PÁGINA FIJO */
+footer {
+  background-color: #f8f9fb00;
+  color: rgb(34, 33, 33);
+  text-align: left;
+  padding: 0 0 0 93%;
+  width: 100%;
+  font-size: 10px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+/* FORMULARIO DE INICIO DE SESIÓN */
+.login-container {
+  text-align: center;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 350px;
+  display: flex;
+  margin: 150px auto;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-container h2 {
+  color: #2d7d46;
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+
+/* Input general */
+.login-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+/* Contenedor de la contraseña con el ojito */
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-container input {
+  width: 100%;
+  padding-right: 40px; /* Espacio para el icono */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  width: 24px; /* Tamaño del icono */
+  height: 24px;
+  opacity: 0.7;
+}
+
+.toggle-password:hover {
+  opacity: 1;
+}
+
+/* Botón de inicio de sesión */
+.login-container button {
+  background: #2d7d46;
+  color: white;
+  border: none;
+  padding: 12px;
+  width: 100%;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 15px;
+}
+
+.login-container button:hover {
+  background: #245a34;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+/* OCULTAR EL CONTENIDO ANTES DEL LOGIN */
+.hidden {
+  display: none;
+}

@@ -1,0 +1,100 @@
+<!DOCTYPE html><meta charset="utf-8" /><title>Buscador</title>
+<style>
+  .row {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 8px;
+  }
+  .controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .pill {
+    padding: 3px 8px;
+    border: 1px solid #ccc;
+    border-radius: 999px;
+    font-size: 12px;
+  }
+</style>
+
+<div class="controls">
+  <input
+    id="name"
+    placeholder="Nombre del estudiante…"
+    style="min-width: 280px"
+  />
+  <button id="buscar">Buscar</button>
+  <span id="meta" class="pill">0 resultados</span>
+</div>
+
+<div id="list"></div>
+
+<div class="controls">
+  <button id="prev">« Anterior</button>
+  <span id="page" class="pill">pág. 1</span>
+  <button id="next">Siguiente »</button>
+</div>
+
+<script>
+  const nameInput = document.getElementById("name");
+  const list = document.getElementById("list");
+  const meta = document.getElementById("meta");
+  const pageLbl = document.getElementById("page");
+  let page = 1,
+    size = 10,
+    t;
+
+  function debounce(f, ms = 250) {
+    clearTimeout(t);
+    t = setTimeout(f, ms);
+  }
+
+  async function load() {
+    const params = new URLSearchParams({
+      name: nameInput.value || "",
+      page,
+      size,
+    });
+    const r = await fetch(
+      "/responsables-app/public/api/estudiantes?" + params,
+      { credentials: "include" }
+    );
+    const j = await r.json();
+
+    meta.textContent = `${j.meta.total} resultados`;
+    pageLbl.textContent = `pág. ${page}`;
+    list.innerHTML = (j.data || []).length
+      ? j.data
+          .map(
+            (x) => `
+      <div class="row">
+        <strong>${x.estudiante}</strong> — ${x.grado || "s/g"}<br>
+        Resp.: ${x.responsable || "-"}<br>
+        Tel: ${x.telefono || "-"} | Email: ${x.correo || "-"}
+      </div>`
+          )
+          .join("")
+      : "<p>Sin resultados.</p>";
+  }
+  document.getElementById("buscar").onclick = () => {
+    page = 1;
+    load();
+  };
+  nameInput.addEventListener("input", () => {
+    page = 1;
+    debounce(load);
+  });
+  document.getElementById("prev").onclick = () => {
+    if (page > 1) {
+      page--;
+      load();
+    }
+  };
+  document.getElementById("next").onclick = () => {
+    page++;
+    load();
+  };
+  load();
+</script>

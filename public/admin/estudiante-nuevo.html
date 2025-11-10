@@ -1,0 +1,174 @@
+<!DOCTYPE html><meta charset="utf-8" /><title>Nuevo estudiante</title>
+<style>
+  body {
+    font-family: system-ui, Arial, Helvetica, sans-serif;
+    max-width: 760px;
+    margin: 24px auto;
+    padding: 0 12px;
+  }
+  fieldset {
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    margin: 12px 0;
+    padding: 12px;
+  }
+  label {
+    display: block;
+    margin: 8px 0 4px;
+  }
+  input,
+  select,
+  textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .ok {
+    color: #0a7a2e;
+  }
+  .err {
+    color: #b00020;
+  }
+  .muted {
+    color: #777;
+  }
+  .card {
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 12px;
+    background: #fafafa;
+  }
+</style>
+
+<h1>Registrar estudiante</h1>
+<p class="muted">Completa los datos y presiona “Guardar”.</p>
+
+<form id="f" class="card" autocomplete="off">
+  <fieldset>
+    <legend><strong>Estudiante</strong></legend>
+    <label>Nombre completo *</label>
+    <input
+      name="estudiante_nombre"
+      required
+      placeholder="Ej. Ana Sofía López"
+    />
+    <label>Grado</label>
+    <select name="grado">
+      <option value="">Seleccione…</option>
+      <option>1°</option>
+      <option>2°</option>
+      <option>3°</option>
+      <option>4°</option>
+      <option>5°</option>
+      <option>6°</option>
+      <option>7°</option>
+      <option>8°</option>
+      <option>9°</option>
+    </select>
+  </fieldset>
+
+  <fieldset>
+    <legend><strong>Responsable</strong></legend>
+    <div class="row">
+      <div>
+        <label>Nombre *</label>
+        <input
+          name="responsable_nombre"
+          required
+          placeholder="Ej. María López"
+        />
+      </div>
+      <div>
+        <label>DUI</label>
+        <input name="dui" placeholder="00000000-0" pattern="\d{8}-\d" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Teléfono</label>
+        <input name="telefono" placeholder="7000-0000" />
+      </div>
+      <div>
+        <label>Correo</label>
+        <input type="email" name="correo" placeholder="correo@ejemplo.com" />
+      </div>
+    </div>
+
+    <label>Dirección</label>
+    <input name="direccion" placeholder="Calle/avenida y número" />
+    <div class="row">
+      <div>
+        <label>Municipio</label>
+        <input name="municipio" placeholder="Municipio" />
+      </div>
+      <div>
+        <label>Departamento</label>
+        <input name="departamento" placeholder="Departamento" />
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="actions">
+    <button>Guardar</button>
+    <span id="msg" class="muted"></span>
+    <a href="/responsables-app/public/buscador">Ir al buscador</a>
+  </div>
+</form>
+
+<script>
+  const f = document.getElementById("f");
+  const msg = document.getElementById("msg");
+
+  f.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    msg.className = "muted";
+    msg.textContent = "Guardando…";
+
+    const body = new URLSearchParams(new FormData(f));
+
+    try {
+      const r = await fetch("/responsables-app/public/api/estudiantes", {
+        method: "POST",
+        body,
+        credentials: "include",
+      });
+
+      const raw = await r.text();
+      let data;
+      try {
+        data = JSON.parse(raw);
+      } catch {}
+
+      if (r.ok) {
+        msg.className = "ok";
+        msg.textContent = `Registro creado (ID ${data?.id ?? "?"}).`;
+        f.reset();
+        console.log("OK POST /api/estudiantes:", data || raw);
+      } else {
+        const combined = [data?.error, data?.message, !data && raw]
+          .filter(Boolean)
+          .join(" — ");
+        msg.className = "err";
+        msg.textContent = `${r.status}: ${combined}`;
+        console.error("ERROR POST /api/estudiantes:", r.status, data || raw);
+      }
+    } catch (ex) {
+      msg.className = "err";
+      msg.textContent = "Error de red: " + ex.message;
+      console.error(ex);
+    }
+  });
+</script>

@@ -1,0 +1,20 @@
+# PHP / Composer
+/vendor/
+/composer.phar
+
+# Entornos / credenciales
+.env
+.env.*
+/config/*local*.php
+
+# Cachés / logs / artefactos
+/storage/*
+/public/uploads/*
+!storage/.gitkeep
+!public/uploads/.gitkeep
+
+# IDEs / SO
+/.idea/
+/.vscode/
+/.DS_Store
+Thumbs.db
