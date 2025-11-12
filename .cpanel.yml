@@ -1,12 +1,9 @@
 ---
 deployment:
   tasks:
-    - /bin/bash -lc 'set -e
+    - /bin/bash -lc 'set -euxo pipefail;
         DEPLOYPATH=/home/cecnsros/public_html/responsables-app;
         mkdir -p "$DEPLOYPATH";
-        /usr/bin/rsync -az --delete
-          --exclude ".git"
-          --exclude ".gitignore"
-          --exclude ".cpanel.yml"
-          --exclude "database/"
-          ./ "$DEPLOYPATH"/'
+        # empaqueta desde el repo y extrae en el destino (sin rsync/ssh)
+        tar --exclude=.git --exclude=.gitignore --exclude=.cpanel.yml --exclude=database -cf - . \
+        | tar -xf - -C "$DEPLOYPATH"'
