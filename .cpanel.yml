@@ -1,0 +1,13 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/cecnsros/public_html/responsables-app
+    # crea el destino si no existe
+    - /bin/mkdir -p $DEPLOYPATH
+    # copia todo EXCEPTO lo que no debe publicarse
+    - /bin/rsync -a --delete \
+        --exclude ".git" \
+        --exclude ".gitignore" \
+        --exclude ".cpanel.yml" \
+        --exclude "database/" \
+        ./ $DEPLOYPATH/
