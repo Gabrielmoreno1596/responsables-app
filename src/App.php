@@ -30,8 +30,15 @@ class App
 
         // 2) App + base path
         $this->app = AppFactory::create();
-        // Ajusta si tu subcarpeta cambia
-        $this->app->setBasePath('/responsables-app/public');
+        // Ajusta si tu subcarpeta cambia en localhost xampp
+        /* $this->app->setBasePath('/responsables-app/public'); */
+
+        //producción
+
+        $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+        $basePath = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
+        $this->app->setBasePath($basePath === '/' ? '' : $basePath);
+
 
         // 3) Body parser (POST forms / JSON)
         $this->app->addBodyParsingMiddleware();
@@ -53,6 +60,25 @@ class App
                     "default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
 
 
+                );
+
+            /* Este código es para producción */
+
+            return $response
+                ->withHeader('X-Frame-Options', 'DENY')
+                ->withHeader('X-Content-Type-Options', 'nosniff')
+                ->withHeader('Referrer-Policy', 'no-referrer')
+                ->withHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()')
+                // HSTS solo si hay HTTPS
+                ->withHeader(
+                    'Strict-Transport-Security',
+                    (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+                        ? 'max-age=31536000; includeSubDomains; preload'
+                        : ''
+                )
+                ->withHeader(
+                    'Content-Security-Policy',
+                    "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
                 );
         });
 

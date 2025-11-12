@@ -1,11 +1,11 @@
 # PHP / Composer
-/vendor/
-/composer.phar
+#/vendor/
+#/composer.phar
 
 # Entornos / credenciales
-.env
-.env.*
-/config/*local*.php
+#.env
+#.env.*
+#/config/*local*.php
 
 # Cachés / logs / artefactos
 /storage/*

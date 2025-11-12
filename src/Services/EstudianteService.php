@@ -54,7 +54,7 @@ class EstudianteService
 
     public function createWithResponsable(array $data): int
     {
-        // TODO: validar datos
+        // /* TODO: validar datos */
         $pdo = Database::pdo();
         $pdo->beginTransaction();
 
@@ -102,7 +102,7 @@ class EstudianteService
         $row = $st->fetch(PDO::FETCH_ASSOC);
 
         if ($row) {
-            // TODO: podrías actualizar datos aquí si quieres mantenerlos frescos
+            // /* TODO: podrías actualizar datos aquí si quieres mantenerlos frescos */
             return (int)$row['id'];
         }
 
