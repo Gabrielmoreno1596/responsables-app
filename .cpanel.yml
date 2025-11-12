@@ -2,14 +2,10 @@
 deployment:
   tasks:
     - /bin/bash -lc 'set -e
-        DEPLOYPATH=/home/cecnsros/public_html/responsables-app;
-        /bin/mkdir -p "$DEPLOYPATH";
-        /bin/rm -rf "$DEPLOYPATH"/*;
-        /bin/tar -C /home/cecnsros/repositories/responsables-app \
-          --exclude=.git \
-          --exclude=.gitignore \
-          --exclude=.cpanel.yml \
-          --exclude=database \
-          -cf /home/cecnsros/tmp/deploy.tar .;
-        /bin/tar -C "$DEPLOYPATH" -xf /home/cecnsros/tmp/deploy.tar;
-        /bin/rm -f /home/cecnsros/tmp/deploy.tar'
+        shopt -s dotglob;
+        SRC=/home/cecnsros/repositories/responsables-app;
+        DST=/home/cecnsros/public_html/responsables-app;
+        /bin/mkdir -p "$DST";
+        /bin/rm -rf "$DST"/*;
+        /bin/cp -a "$SRC"/* "$DST"/;
+        /bin/rm -rf "$DST/.git"'
