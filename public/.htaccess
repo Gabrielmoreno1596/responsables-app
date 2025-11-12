@@ -1,12 +1,6 @@
 RewriteEngine On
 RewriteBase /responsables-app/public/
-
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
-
-RewriteRule ^ index.php [QSA,L]
-
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [QSA,L]
