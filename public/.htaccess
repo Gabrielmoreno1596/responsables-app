@@ -1,6 +1,9 @@
 RewriteEngine On
-RewriteBase /responsables-app/public/
+
+# Sirve archivos/directorios reales
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
-RewriteRule ^ index.php [QSA,L]
+
+# Todo lo demás a index.php (Slim)
+RewriteRule ^ index.php [L]
